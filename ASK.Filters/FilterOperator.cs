@@ -1,6 +1,6 @@
 namespace ASK.Filters;
 
-public enum FilterOperator
+public enum Operator
 {
-    And,Or,Not,Equal,Null,GreaterThan,LessThan,GreaterThanOrEqual,LessThanOrEqual,Contains,StartWith,EndWith
+    And,Or,Not,Equal,GreaterThan,LessThan,GreaterThanOrEqual,LessThanOrEqual,Contains,StartWith,EndWith
 }

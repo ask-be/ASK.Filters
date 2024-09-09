@@ -5,8 +5,8 @@ namespace ASK.Filters.Tests;
 public class InvalidFilterTests
 {
     [Theory]
-    [InlineData("Sum")]
     [InlineData("Eq")]
+    [InlineData("Sum Price 22")]
     [InlineData("Eq Price Hello")]
     [InlineData("Eq Unknown Hello")]
     [InlineData("Eq CreationDate Hello")]
@@ -17,6 +17,7 @@ public class InvalidFilterTests
     [InlineData("And Eq IsOutOfStock")]
     public void InvalidCastFilter(string filter)
     {
-        Assert.Throws<FormatException>(() => Filter.Parse(filter,new FilterOptions<Product>()));
+        var parser = new FilterParser(new FilterOptions<Product>());
+        Assert.Throws<FormatException>(() => parser.Parse(filter));
     }
 }
