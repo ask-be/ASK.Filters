@@ -4,6 +4,13 @@
         <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <PackageLicenseExpression>LGPL-2.0-or-later</PackageLicenseExpression>
+        <PackageReadmeFile>Readme.md</PackageReadmeFile>
+        <RepositoryUrl>https://gitlab.com/gitlapico/ask.filters</RepositoryUrl>
     </PropertyGroup>
+
+    <ItemGroup>
+        <None Include="Readme.md" Pack="true" PackagePath="\"/>
+    </ItemGroup>
 
 </Project>
