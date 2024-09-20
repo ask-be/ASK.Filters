@@ -20,7 +20,7 @@ public class FilterEvaluator
         {
             BinaryOperation binaryOperation => binaryOperation.GetExpression(
                 GetOperationExpression<T>(parameter, binaryOperation.LeftOperation),
-                GetOperationExpression<T>(parameter, binaryOperation.LeftOperation)),
+                GetOperationExpression<T>(parameter, binaryOperation.RightOperation)),
             UnaryOperation unaryOperation => unaryOperation.GetExpression(
                 GetOperationExpression<T>(parameter, unaryOperation.Operation)),
             PropertyOperation propertyOperation => GetPropertyExpression<T>(parameter, propertyOperation),
