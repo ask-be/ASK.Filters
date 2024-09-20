@@ -89,9 +89,6 @@ public class OperatorFilterTests(ITestOutputHelper output) : BaseEFTest(output)
     [InlineData("lt CreationDate 2023-12-15",11)]
     public void TestLessThanOperatorFilter(string filterString, int expectedCount)
     {
-        using var context = GetContext();
-        var res = context.Products.Where(x => 10 == 12).ToList();
-
         ApplyFilterAndCheckCount(filterString, expectedCount);
     }
 
@@ -105,7 +102,7 @@ public class OperatorFilterTests(ITestOutputHelper output) : BaseEFTest(output)
     }
 
     [Theory]
-    [InlineData("Ct Name a",20)]
+    [InlineData("Contains Name a",20)]
     public void TestContainsOperatorFilter(string filterString, int expectedCount)
     {
         ApplyFilterAndCheckCount(filterString, expectedCount);

@@ -7,10 +7,10 @@ public class FilterEvaluator
 {
     public static readonly FilterEvaluator Default = new();
 
-    public Expression<Func<T, bool>> GetExpression<T>(Filter filter)
+    public Expression<Func<T, bool>> GetExpression<T>(FilterPropertyType filterPropertyType)
     {
         var parameter = Expression.Parameter(typeof(T), "x");
-        var expression = GetOperationExpression<T>(parameter,filter.Operation);
+        var expression = GetOperationExpression<T>(parameter,filterPropertyType.Operation);
         return Expression.Lambda<Func<T, bool>>(expression, parameter);
     }
 

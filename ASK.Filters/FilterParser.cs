@@ -7,18 +7,20 @@ namespace ASK.Filters;
 
 public class FilterParser(FilterOptions filterOptions)
 {
-    public Filter Parse(string filter)
+    public FilterOptions Options { get; } = filterOptions;
+
+    public FilterPropertyType Parse(string filter)
     {
-        var tokens = filterOptions.Tokenizer.Tokenize(filter);
-        return new Filter(filter, GetOperation(tokens));
+        var tokens = Options.Tokenizer.Tokenize(filter);
+        return new FilterPropertyType(filter, GetOperation(tokens));
     }
 
-    public bool TryParse(string filter, out Filter? result)
+    public bool TryParse(string filter, out FilterPropertyType? result)
     {
         try
         {
-            var tokens = filterOptions.Tokenizer.Tokenize(filter);
-            result = new Filter(filter, GetOperation(tokens));
+            var tokens = Options.Tokenizer.Tokenize(filter);
+            result = new FilterPropertyType(filter, GetOperation(tokens));
         }
         catch (Exception)
         {
@@ -36,7 +38,7 @@ public class FilterParser(FilterOptions filterOptions)
 
         var operatorType = tokens.Pop().ToUpper();
 
-        if (filterOptions.BinaryOperations.TryGetValue(operatorType, out var binaryOperation))
+        if (Options.BinaryOperations.TryGetValue(operatorType, out var binaryOperation))
         {
             var left = GetOperation(tokens);
             var right = GetOperation(tokens);
@@ -44,14 +46,14 @@ public class FilterParser(FilterOptions filterOptions)
             return binaryOperation(left,right);
         }
 
-        if (filterOptions.UnaryOperations.TryGetValue(operatorType, out var unaryOperation))
+        if (Options.UnaryOperations.TryGetValue(operatorType, out var unaryOperation))
         {
             var operation = GetOperation(tokens);
 
             return unaryOperation(operation);
         }
 
-        if (filterOptions.PropertyOperations.TryGetValue(operatorType, out var propertyOperation))
+        if (Options.PropertyOperations.TryGetValue(operatorType, out var propertyOperation))
         {
             if(tokens.Count < 2)
                 throw new FormatException();
@@ -59,11 +61,11 @@ public class FilterParser(FilterOptions filterOptions)
             var propertyName = tokens.Pop();
             var value = tokens.Pop();
 
-            var property = filterOptions.GetPropertyByName(propertyName);
+            var property = Options.GetPropertyByName(propertyName);
             if (property is null)
                 throw new FormatException($"Property {propertyName} not found");
 
-            return propertyOperation(property.Name, filterOptions.ConvertToType(value, property.Type));
+            return propertyOperation(property.Name, Options.ConvertToType(value, property.Type));
         }
 
         throw new FormatException("Invalid operation type");

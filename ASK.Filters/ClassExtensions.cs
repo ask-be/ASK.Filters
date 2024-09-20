@@ -6,31 +6,31 @@ public static class ClassExtensions
 {
     public static IQueryable<TSource> ApplyFilter<TSource>(
         this IQueryable<TSource> source,
-        Filter filter)
+        FilterPropertyType filterPropertyType)
     {
-        return ApplyFilter(source, filter, FilterEvaluator.Default);
+        return ApplyFilter(source, filterPropertyType, FilterEvaluator.Default);
     }
 
     public static IQueryable<TSource> ApplyFilter<TSource>(
         this IQueryable<TSource> source,
-        Filter filter,
+        FilterPropertyType filterPropertyType,
         FilterEvaluator filterEvaluator)
     {
-        return source.Where(filterEvaluator.GetExpression<TSource>(filter));
+        return source.Where(filterEvaluator.GetExpression<TSource>(filterPropertyType));
     }
 
     public static IEnumerable<TSource> ApplyFilter<TSource>(
         this IEnumerable<TSource> source,
-        Filter filter)
+        FilterPropertyType filterPropertyType)
     {
-        return ApplyFilter(source, filter, FilterEvaluator.Default);
+        return ApplyFilter(source, filterPropertyType, FilterEvaluator.Default);
     }
 
     public static IEnumerable<TSource> ApplyFilter<TSource>(
         this IEnumerable<TSource> source,
-        Filter filter,
+        FilterPropertyType filterPropertyType,
         FilterEvaluator filterEvaluator)
     {
-        return source.Where(filterEvaluator.GetExpression<TSource>(filter).Compile());
+        return source.Where(filterEvaluator.GetExpression<TSource>(filterPropertyType).Compile());
     }
 }

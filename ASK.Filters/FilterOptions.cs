@@ -41,9 +41,9 @@ public class FilterOptions
         AddOperation("GTE", (x,y) => new GreaterThanOrEqualOperation(x,y));
         AddOperation("LT", (x,y) => new LessThanOperation(x,y));
         AddOperation("LTE", (x,y) => new LessThanOrEqualOperation(x,y));
-        AddOperation("CT", (x,y) => new ContainsOperation(x,y));
-        AddOperation("SW", (x,y) => new StartWithOperation(x,y));
-        AddOperation("EW", (x,y) => new EndWithOperation(x,y));
+        AddOperation("CONTAINS", (x,y) => new ContainsOperation(x,y));
+        AddOperation("START", (x,y) => new StartWithOperation(x,y));
+        AddOperation("END", (x,y) => new EndWithOperation(x,y));
 
         AddConverter<string>(x => x);
         AddConverter(x => x.Length == 1 ? x[0] : throw new FormatException($"Cannot convert {x} to char"));

@@ -44,11 +44,10 @@ using System.Linq.Expressions;
 string query = "AND CONTAINS author John EQUAL publicationyear 1998";
 
 // Create FilterOptions that contain all the available values and operations of the filter
-var filterOptions = new FilterOptions(new List<IFilterProperty>
-{
+var filterOptions = new FilterOptions([
     new FilterProperty<string>("author"),
     new FilterProperty<int>("publicationyear")
-});
+]);
 
 // Once you have filter options, create a parser
 var filterParser = new FilterParser(filterOptions);
