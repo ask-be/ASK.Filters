@@ -94,7 +94,7 @@ public class FilterOptions
 
     public FilterOptions AddConverter<T>(Func<string, T> converter)
     {
-        _converters[typeof(T)] = input => converter(input);
+        _converters[typeof(T)] = input => converter(input)!;
         return this;
     }
 

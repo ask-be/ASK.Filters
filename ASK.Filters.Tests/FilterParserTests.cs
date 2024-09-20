@@ -5,6 +5,11 @@ namespace ASK.Filters.Tests;
 
 public record User(string FirstName, string LastName);
 
+public enum TestEnum
+{
+    Val1,Val2,Val3
+}
+
 public class FilterParserTests
 {
     [Fact]
@@ -23,7 +28,20 @@ public class FilterParserTests
 
 
         var expression = FilterEvaluator.Default.GetExpression<User>(filter);
+    }
 
+    [Fact]
+    public void CanParseWithCustomConverter()
+    {
+        var o = new FilterOptions([
+            new FilterProperty<TestEnum>("enu")
+        ]);
+        o.AddConverter(Enum.Parse<TestEnum>);
+
+        var filter = new FilterParser(o).Parse("eq enu Val1");
+        filter.Operation.Should().BeAssignableTo<EqualOperation>();
+
+        ((EqualOperation)filter.Operation).Value.Should().Be(TestEnum.Val1);
 
     }
 }

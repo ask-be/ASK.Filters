@@ -7,7 +7,7 @@ public record Address(int Id, string AddressLine1, string AddressLine2, string C
 public class Product
 {
     public int Id { get; private set; }
-    public string Name { get; private set; }
+    public string? Name { get; private set; }
     public decimal Price { get; private set; }
     public bool IsOutOfStock { get; private set; }
     public DateTime CreationDate { get; private set; }
