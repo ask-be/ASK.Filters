@@ -1,6 +1,6 @@
 # ASK.Filters
 
-**ASK.Filters** is a C# library that converts `WHERE` clauses written in Polish notation into expressions that can be used with EntityFramework. This library is particularly useful for REST APIs, allowing complex filters to be specified directly in the URL.
+**ASK.Filters** is a C# library that converts `WHERE` clauses written in Polish notation into expressions that can be used with EntityFramework or any IEnumerable. This library is particularly useful for REST APIs, allowing complex filters to be specified directly in the URL.
 
 ## Features
 
