@@ -2,8 +2,6 @@ using System.Linq.Expressions;
 
 namespace ASK.Filters;
 
-public delegate Expression CreatePropertyExpression(ParameterExpression parameter, string propertyName);
-
 public static class ClassExtensions
 {
     public static IQueryable<TSource> ApplyFilter<TSource>(

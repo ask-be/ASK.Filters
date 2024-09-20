@@ -8,7 +8,7 @@ public abstract record PropertyOperation(string Name, object Value) : IOperation
     public abstract Expression GetExpression(Expression left, Expression right);
 }
 
-internal record EqualOperation(string Name, object Value) : PropertyOperation(Name, Value)
+public record EqualOperation(string Name, object Value) : PropertyOperation(Name, Value)
 {
     public override Expression GetExpression(Expression left, Expression right)
     {
@@ -16,7 +16,7 @@ internal record EqualOperation(string Name, object Value) : PropertyOperation(Na
     }
 }
 
-internal record GreaterThanOperation : PropertyOperation
+public record GreaterThanOperation : PropertyOperation
 {
     public GreaterThanOperation(string Name, object Value) : base(Name, Value)
     {
@@ -30,7 +30,7 @@ internal record GreaterThanOperation : PropertyOperation
     }
 }
 
-internal record GreaterThanOrEqualOperation : PropertyOperation
+public record GreaterThanOrEqualOperation : PropertyOperation
 {
     public GreaterThanOrEqualOperation(string Name, object Value) : base(Name, Value)
     {
@@ -44,7 +44,7 @@ internal record GreaterThanOrEqualOperation : PropertyOperation
     }
 }
 
-internal record LessThanOperation : PropertyOperation
+public record LessThanOperation : PropertyOperation
 {
     public LessThanOperation(string Name, object Value) : base(Name, Value)
     {
@@ -58,7 +58,7 @@ internal record LessThanOperation : PropertyOperation
     }
 }
 
-internal record LessThanOrEqualOperation : PropertyOperation
+public record LessThanOrEqualOperation : PropertyOperation
 {
     public LessThanOrEqualOperation(string Name, object Value) : base(Name, Value)
     {
@@ -72,7 +72,7 @@ internal record LessThanOrEqualOperation : PropertyOperation
     }
 }
 
-internal record ContainsOperation : PropertyOperation
+public record ContainsOperation : PropertyOperation
 {
     private static readonly MethodInfo ContainsMethod = typeof(string).GetMethod("Contains",BindingFlags.Instance | BindingFlags.Public , [typeof(string)])!;
 
@@ -88,7 +88,7 @@ internal record ContainsOperation : PropertyOperation
     }
 }
 
-internal record StartWithOperation : PropertyOperation
+public record StartWithOperation : PropertyOperation
 {
     private static readonly MethodInfo StartWithMethod = typeof(string).GetMethod("StartWith",BindingFlags.Instance | BindingFlags.Public , [typeof(string)])!;
 
@@ -104,7 +104,7 @@ internal record StartWithOperation : PropertyOperation
     }
 }
 
-internal record EndWithOperation : PropertyOperation
+public record EndWithOperation : PropertyOperation
 {
     private static readonly MethodInfo EndWithMethod = typeof(string).GetMethod("EndWith",BindingFlags.Instance | BindingFlags.Public , [typeof(string)])!;
 

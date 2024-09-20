@@ -7,7 +7,7 @@ public abstract record BinaryOperation(IOperation LeftOperation, IOperation Righ
     public abstract Expression GetExpression(Expression leftOperation, Expression rightOperation);
 }
 
-internal record AndOperation(IOperation LeftOperation, IOperation RightOperation) : BinaryOperation(LeftOperation, RightOperation)
+public record AndOperation(IOperation LeftOperation, IOperation RightOperation) : BinaryOperation(LeftOperation, RightOperation)
 {
     public override Expression GetExpression(Expression leftOperation, Expression rightOperation)
     {
@@ -15,7 +15,7 @@ internal record AndOperation(IOperation LeftOperation, IOperation RightOperation
     }
 }
 
-internal record OrOperation(IOperation LeftOperation, IOperation RightOperation) : BinaryOperation(LeftOperation, RightOperation)
+public record OrOperation(IOperation LeftOperation, IOperation RightOperation) : BinaryOperation(LeftOperation, RightOperation)
 {
     public override Expression GetExpression(Expression leftOperation, Expression rightOperation)
     {

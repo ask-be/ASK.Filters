@@ -2,8 +2,6 @@ using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using ASK.Filters.Operations;
 
-[assembly:InternalsVisibleTo("ASK.Filters.Tests")]
-
 namespace ASK.Filters;
 
 public class Filter(string value, IOperation operation)

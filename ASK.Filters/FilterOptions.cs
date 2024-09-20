@@ -66,7 +66,7 @@ public class FilterOptions
 
     public ITokenizer Tokenizer { get; private set; } = new DefaultTokenizer();
 
-    public FilterOptions ClearOperation()
+    public FilterOptions ClearOperations()
     {
         _binaryOperations.Clear();
         _availableFilterProperties.Clear();
