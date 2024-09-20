@@ -21,6 +21,7 @@ public class FilterOptions
     public CultureInfo CultureInfo { get; }
 
     private readonly List<FilterProperty> _availableFilterProperties;
+    private readonly Dictionary<Type, Func<string, object>> _converters = new();
 
     public FilterOptions(IEnumerable<FilterProperty> properties, CultureInfo? cultureInfo = null)
     {
@@ -43,15 +44,30 @@ public class FilterOptions
         AddOperation("CT", (x,y) => new ContainsOperation(x,y));
         AddOperation("SW", (x,y) => new StartWithOperation(x,y));
         AddOperation("EW", (x,y) => new EndWithOperation(x,y));
+
+        AddConverter<string>(x => x);
+        AddConverter(x => x.Length == 1 ? x[0] : throw new FormatException($"Cannot convert {x} to char"));
+        AddConverter(x => int.Parse(x, CultureInfo));
+        AddConverter(x => long.Parse(x, CultureInfo));
+        AddConverter(x => float.Parse(x, CultureInfo));
+        AddConverter(x => double.Parse(x, CultureInfo));
+        AddConverter(x => decimal.Parse(x, CultureInfo));
+        AddConverter(x => DateTime.Parse(x, CultureInfo));
+        AddConverter(x => DateTimeOffset.Parse(x, CultureInfo));
+        AddConverter(x => DateOnly.Parse(x, CultureInfo));
+        AddConverter(x => TimeOnly.Parse(x, CultureInfo));
+        AddConverter(x => TimeSpan.Parse(x, CultureInfo));
+        AddConverter(x =>
+        {
+            var valueToLower = x.ToLower();
+            return valueToLower is "true" or "1" || (valueToLower is "false" or "0"
+                ? false
+                : throw new FormatException($"Cannot convert {x} to bool"));
+        });
     }
 
     public FilterOptions(Type type, CultureInfo? cultureInfo = null)
         :this(type.GetProperties().Select(x => new FilterProperty(x.Name, x.PropertyType)), cultureInfo)
-    {
-    }
-
-    public FilterOptions(object value, CultureInfo? cultureInfo = null)
-        :this(value.GetType(), cultureInfo)
     {
     }
 
@@ -60,16 +76,32 @@ public class FilterOptions
         return _availableFilterProperties.Find(p => p.Name.Equals(propertyName, StringComparison.InvariantCultureIgnoreCase));
     }
 
+    internal object ConvertToType(string value, Type type)
+    {
+        if (_converters.TryGetValue(type, out var converter))
+        {
+            return converter(value);
+        }
+        throw new FormatException($"Cannot convert {value} to type {type}");
+    }
+
     public IReadOnlyDictionary<string,CreateBinaryOperationFunc> BinaryOperations => _binaryOperations;
     public IReadOnlyDictionary<string,CreateUnaryOperationFunc> UnaryOperations => _unaryOperations;
     public IReadOnlyDictionary<string,CreatePropertyOperationFunc> PropertyOperations => _propertyOperations;
 
     public ITokenizer Tokenizer { get; private set; } = new DefaultTokenizer();
+    public IReadOnlyList<FilterProperty> FilterProperties => _availableFilterProperties;
+
+    public FilterOptions AddConverter<T>(Func<string, T> converter)
+    {
+        _converters[typeof(T)] = input => converter(input);
+        return this;
+    }
 
     public FilterOptions ClearOperations()
     {
         _binaryOperations.Clear();
-        _availableFilterProperties.Clear();
+        _unaryOperations.Clear();
         _propertyOperations.Clear();
         return this;
     }

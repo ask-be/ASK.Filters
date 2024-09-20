@@ -25,7 +25,10 @@ public class FilterTests
     [Fact]
     public void ParseAndFilter()
     {
-        var parser = new FilterParser(new FilterOptions(new {Name = "", Birthdate = DateTime.MinValue}));
+        var parser = new FilterParser(new FilterOptions([
+            new FilterProperty<string>("Name"),
+            new FilterProperty<DateTime>("Birthdate")
+        ]));
 
         var filter = parser.Parse("and eq name Vincent gt birthdate 2020-12-10");
 

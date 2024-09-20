@@ -59,43 +59,13 @@ public class FilterParser(FilterOptions filterOptions)
             var propertyName = tokens.Pop();
             var value = tokens.Pop();
 
-            var realPropertyName = filterOptions.GetPropertyByName(propertyName);
-            if (realPropertyName is null)
+            var property = filterOptions.GetPropertyByName(propertyName);
+            if (property is null)
                 throw new FormatException($"Property {propertyName} not found");
 
-            var propertyValue = ConvertToType(value, realPropertyName.Type, filterOptions.CultureInfo);
-
-            return propertyOperation(realPropertyName.Name,propertyValue);
+            return propertyOperation(property.Name, filterOptions.ConvertToType(value, property.Type));
         }
 
         throw new FormatException("Invalid operation type");
-    }
-
-    private static object ConvertToType(string value, Type propertyType, CultureInfo cultureInfo)
-    {
-        return propertyType switch
-        {
-            not null when propertyType == typeof(string) => value,
-            not null when propertyType == typeof(char) => value.Length == 1 ? value[0] : throw new FormatException($"Cannot convert {value} to char"),
-            not null when propertyType == typeof(int) => int.Parse(value, cultureInfo),
-            not null when propertyType == typeof(long) => long.Parse(value, cultureInfo),
-            not null when propertyType == typeof(double) => double.Parse(value, cultureInfo),
-            not null when propertyType == typeof(float) => float.Parse(value, cultureInfo),
-            not null when propertyType == typeof(Enum) => Enum.Parse(propertyType, value, true),
-            not null when propertyType == typeof(decimal) => decimal.Parse(value, cultureInfo),
-            not null when propertyType == typeof(DateTime) => DateTime.Parse(value, cultureInfo),
-            not null when propertyType == typeof(DateTimeOffset) => DateTimeOffset.Parse(value, cultureInfo),
-            not null when propertyType == typeof(DateOnly) => DateOnly.Parse(value, cultureInfo),
-            not null when propertyType == typeof(TimeOnly) => TimeOnly.Parse(value, cultureInfo),
-            not null when propertyType == typeof(bool) => ConvertBool(value),
-            _ => throw new Exception($"Cannot convert {value} to {propertyType}")
-        };
-    }
-
-    private static bool ConvertBool(string value){
-        var valueToLower = value.ToLower();
-        return valueToLower is "true" or "1" || (valueToLower is "false" or "0"
-            ? false
-            : throw new FormatException($"Cannot convert {value} to bool"));
     }
 }
