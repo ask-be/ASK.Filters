@@ -5,7 +5,7 @@
 ## Features
 
 - Converts `WHERE` clauses in Polish notation to LINQ expressions.
-- Supports logical operators `AND` and `OR` without the need for parentheses.
+- Operations AND, OR, NOT, EQ, GT, GTE, LT, LTE, CONTAINS, START and END included
 - No dependencies between API and Infrastructure layers.
 - Easily configurable:
   - Add custom operations.
@@ -43,7 +43,7 @@ using System.Linq.Expressions;
 // Example of a WHERE clause in Polish notation
 string query = "AND CONTAINS author John EQUAL publicationyear 1998";
 
-// Create FilterOptions that contain all the available values and operations of the filter
+// Create FilterOptions that contain all the available values and operations of the filter 
 var filterOptions = new FilterOptions([
     new FilterProperty<string>("author"),
     new FilterProperty<int>("publicationyear")
