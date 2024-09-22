@@ -9,18 +9,18 @@ public class FilterParser(FilterOptions filterOptions)
 {
     public FilterOptions Options { get; } = filterOptions;
 
-    public FilterPropertyType Parse(string filter)
+    public Filter Parse(string filter)
     {
         var tokens = Options.Tokenizer.Tokenize(filter);
-        return new FilterPropertyType(filter, GetOperation(tokens));
+        return new Filter(filter, GetOperation(tokens));
     }
 
-    public bool TryParse(string filter, out FilterPropertyType? result)
+    public bool TryParse(string filter, out Filter? result)
     {
         try
         {
             var tokens = Options.Tokenizer.Tokenize(filter);
-            result = new FilterPropertyType(filter, GetOperation(tokens));
+            result = new Filter(filter, GetOperation(tokens));
         }
         catch (Exception)
         {

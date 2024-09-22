@@ -55,11 +55,84 @@ var filterParser = new FilterParser(filterOptions);
 // Parse your filter
 var filter = filterParser.Parse(query);
 
+var filterEvaluator = new FilterEvaluator<Book>();
+var expression  = filterEvaluator.GetExpression(filter);
+
 // Use with EntityFramework
 using (var context = new BookContext())
 {
-    var books = context.Books.ApplyFilter(filter).ToList();
+    var books = context.Books.Where(expression).ToList();
 }
+```
+
+## Customizing Query Generation
+
+ASK.Filters allows for advanced customization of query generation. By default, the library maps a filter property directly to a property on the object being filtered. However, you can extend this behavior by adding custom operations, specific converters (particularly useful for ValueType mapping in Entity Framework), and custom evaluators to generate complex expressions as needed.
+
+### Example of Custom Operation
+
+To create a custom operation, such as the `LIKE` method in EntityFramework, start by creating the `LikeOperation` class inheriting from `PropertyOperation`:
+
+```csharp
+public record LikeOperation : PropertyOperation
+{
+    private static readonly MethodInfo LikeMethod = typeof(DbFunctionsExtensions)
+        .GetMethod(nameof(DbFunctionsExtensions.Like), new[] { typeof(DbFunctions), typeof(string), typeof(string) })!;
+    private static readonly Expression EfFunctions = Expression.Constant(EF.Functions);
+
+    public LikeOperation(string name, object value) : base(name, value)
+    {
+        if (value is not string)
+            throw new FormatException("Like value must be a string");
+    }
+
+    public override Expression GetExpression(Expression left, Expression right)
+    {
+        return Expression.Call(LikeMethod, EfFunctions, left, right);
+    }
+}
+```
+
+Next, add your custom operation to the `FilterOptions`:
+
+```csharp
+var options = new FilterOptions(...)
+    .AddOperation("LIKE", (name, value) => new LikeOperation(name, value));
+```
+
+You can now use the `LIKE` keyword in your filters:
+
+```
+LIKE Name V?nc%
+```
+### Example of Custom Evaluator
+Let’s say you want a filter on the FirstName of a User to match either the FirstName or the PhoneticFirstName properties. You can achieve this by creating a custom evaluator:
+
+```csharp
+public class UserFilterEvaluator : FilterEvaluator<User>
+{
+    protected override Expression GetPropertyExpression(ParameterExpression parameter, PropertyOperation property)
+    {
+        if (property.Name == "FirstName")
+        {
+            return Expression.Or(
+                property.GetExpression(
+                    Expression.Property(parameter, "Firstname"),
+                    Expression.Constant(property.Value)
+                ), property.GetExpression(
+                    Expression.Property(parameter, "PhoneticFirstName"),
+                    Expression.Constant(property.Value)
+                ));
+        }
+        return base.GetPropertyExpression(parameter, property);
+    }
+}
+```
+
+To use this custom evaluator, you would create an instance and get the expression as follows:
+
+```csharp
+var expression  = new UserFilterEvaluator().GetExpression(filter);
 ```
 
 ## License

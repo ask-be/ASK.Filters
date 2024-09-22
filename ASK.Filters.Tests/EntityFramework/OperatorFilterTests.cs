@@ -5,17 +5,17 @@ using Xunit.Abstractions;
 
 namespace ASK.Filters.Tests.EntityFramework;
 
-public class CustomFilterEvaluator : FilterEvaluator
+public class CustomProductFilterEvaluator : FilterEvaluator<Product>
 {
-    protected override Expression GetPropertyExpression<T>(ParameterExpression parameter, PropertyOperation property)
+    protected override Expression GetPropertyExpression(ParameterExpression parameter, PropertyOperation property)
     {
         if (property.Name == "City")
         {
             var addresses = Expression.Property(parameter, "Addresses");
             var addressParam = Expression.Parameter(typeof(Address), "y");
-            var country = Expression.Property(addressParam, property.Name);
-            var valueExpression = Expression.Constant(property.Value);
-            var condition = property.GetExpression(country, valueExpression);
+            var condition = property.GetExpression(
+                Expression.Property(addressParam, property.Name),
+                Expression.Constant(property.Value));
             return Expression.Call(
                 typeof(Enumerable),
                 "Any",
@@ -24,7 +24,7 @@ public class CustomFilterEvaluator : FilterEvaluator
                 Expression.Lambda<Func<Address, bool>>(condition, addressParam)
             );
         }
-        return base.GetPropertyExpression<T>(parameter, property);
+        return base.GetPropertyExpression(parameter, property);
     }
 }
 
@@ -33,12 +33,13 @@ public class OperatorFilterTests(ITestOutputHelper output) : BaseEFTest(output)
     private void ApplyFilterAndCheckCount(string filterString, int expectedCount)
     {
         var options = new FilterOptions<Product>()
-            .AddProperty<string>("City");
+            .AddProperty<string>("City")
+            .AddOperation("LIKE", (x,y) => new LikeOperation(x,y));
 
         var parser = new FilterParser(options);
         var filter = parser.Parse(filterString);
         using var context = GetContext();
-        context.Products.ApplyFilter(filter, new CustomFilterEvaluator()).Count().Should().Be(expectedCount);
+        context.Products.ApplyFilter(filter, new CustomProductFilterEvaluator()).Count().Should().Be(expectedCount);
     }
 
 
@@ -104,6 +105,13 @@ public class OperatorFilterTests(ITestOutputHelper output) : BaseEFTest(output)
     [Theory]
     [InlineData("Contains Name a",20)]
     public void TestContainsOperatorFilter(string filterString, int expectedCount)
+    {
+        ApplyFilterAndCheckCount(filterString, expectedCount);
+    }
+
+    [Theory]
+    [InlineData("Like Name a%",1)]
+    public void TestLikeOperatorFilter(string filterString, int expectedCount)
     {
         ApplyFilterAndCheckCount(filterString, expectedCount);
     }

@@ -3,32 +3,32 @@ using ASK.Filters.Operations;
 
 namespace ASK.Filters;
 
-public class FilterEvaluator
+public class FilterEvaluator<T>
 {
-    public static readonly FilterEvaluator Default = new();
+    public static readonly FilterEvaluator<T> Default = new();
 
-    public Expression<Func<T, bool>> GetExpression<T>(FilterPropertyType filterPropertyType)
+    public Expression<Func<T, bool>> GetExpression(Filter filter)
     {
         var parameter = Expression.Parameter(typeof(T), "x");
-        var expression = GetOperationExpression<T>(parameter,filterPropertyType.Operation);
+        var expression = GetOperationExpression(parameter,filter.Operation);
         return Expression.Lambda<Func<T, bool>>(expression, parameter);
     }
 
-    private Expression GetOperationExpression<T>(ParameterExpression parameter, IOperation operation)
+    private Expression GetOperationExpression(ParameterExpression parameter, IOperation operation)
     {
         return operation switch
         {
             BinaryOperation binaryOperation => binaryOperation.GetExpression(
-                GetOperationExpression<T>(parameter, binaryOperation.LeftOperation),
-                GetOperationExpression<T>(parameter, binaryOperation.RightOperation)),
+                GetOperationExpression(parameter, binaryOperation.LeftOperation),
+                GetOperationExpression(parameter, binaryOperation.RightOperation)),
             UnaryOperation unaryOperation => unaryOperation.GetExpression(
-                GetOperationExpression<T>(parameter, unaryOperation.Operation)),
-            PropertyOperation propertyOperation => GetPropertyExpression<T>(parameter, propertyOperation),
+                GetOperationExpression(parameter, unaryOperation.Operation)),
+            PropertyOperation propertyOperation => GetPropertyExpression(parameter, propertyOperation),
             _ => throw new NotSupportedException($"Unsupported operation: {operation}")
         };
     }
 
-    protected virtual Expression GetPropertyExpression<T>(ParameterExpression parameter, PropertyOperation property)
+    protected virtual Expression GetPropertyExpression(ParameterExpression parameter, PropertyOperation property)
     {
         return property.GetExpression(
             Expression.Property(parameter, GetPropertyName(property)),

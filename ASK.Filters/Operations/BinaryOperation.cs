@@ -4,12 +4,12 @@ namespace ASK.Filters.Operations;
 
 public abstract record BinaryOperation(IOperation LeftOperation, IOperation RightOperation) : IOperation
 {
-    public abstract Expression GetExpression(Expression leftOperation, Expression rightOperation);
+    public abstract BinaryExpression GetExpression(Expression leftOperation, Expression rightOperation);
 }
 
 public record AndOperation(IOperation LeftOperation, IOperation RightOperation) : BinaryOperation(LeftOperation, RightOperation)
 {
-    public override Expression GetExpression(Expression leftOperation, Expression rightOperation)
+    public override BinaryExpression GetExpression(Expression leftOperation, Expression rightOperation)
     {
         return Expression.AndAlso(leftOperation,rightOperation);
     }
@@ -17,7 +17,7 @@ public record AndOperation(IOperation LeftOperation, IOperation RightOperation) 
 
 public record OrOperation(IOperation LeftOperation, IOperation RightOperation) : BinaryOperation(LeftOperation, RightOperation)
 {
-    public override Expression GetExpression(Expression leftOperation, Expression rightOperation)
+    public override BinaryExpression GetExpression(Expression leftOperation, Expression rightOperation)
     {
         return Expression.Or(leftOperation,rightOperation);
     }

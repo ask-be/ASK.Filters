@@ -4,7 +4,7 @@ using ASK.Filters.Operations;
 
 namespace ASK.Filters;
 
-public class FilterPropertyType(string value, IOperation operation)
+public class Filter(string value, IOperation operation)
 {
     public string Value { get; private set; } = value;
 
