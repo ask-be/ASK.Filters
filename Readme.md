@@ -105,6 +105,19 @@ You can now use the `LIKE` keyword in your filters:
 ```
 LIKE Name V?nc%
 ```
+
+### Customization of operation names in query
+
+BY default AND, OR, NOT, EQ, GT, GTE, LT, LTE, CONTAINS, START and END operations are included in the FilterOptions bu you can customize this for you own abbreviation if you like.
+
+```csharp
+var options = new FilterOptions(...)
+    .ClearOperations()
+    .AddOperation("ET", (left, right) => new AndOperation(left, right))
+    .AddOperation("OU", (left, right) => new OrOperation(left, right))
+    .AddOperation("EGAL", (name, value) => new EqualOperation(name, value));
+```
+
 ### Example of Custom Evaluator
 Let’s say you want a filter on the FirstName of a User to match either the FirstName or the PhoneticFirstName properties. You can achieve this by creating a custom evaluator:
 
