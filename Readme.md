@@ -117,6 +117,11 @@ var options = new FilterOptions(...)
     .AddOperation("OU", (left, right) => new OrOperation(left, right))
     .AddOperation("EGAL", (name, value) => new EqualOperation(name, value));
 ```
+Example:
+
+```
+ET EGAL FirstName John EGAL LastName Doe 
+```
 
 ### Example of Custom Evaluator
 Let’s say you want a filter on the FirstName of a User to match either the FirstName or the PhoneticFirstName properties. You can achieve this by creating a custom evaluator:
