@@ -33,8 +33,10 @@ public class OperatorFilterTests(ITestOutputHelper output) : BaseEFTest(output)
     private void ApplyFilterAndCheckCount(string filterString, int expectedCount)
     {
         var options = new FilterOptions<Product>()
-            .AddProperty<string>("City")
-            .AddOperation("LIKE", (x,y) => new LikeOperation(x,y));
+                      .WithNullValueAs("NULL_VALUE")
+                      .WithStringEmptyAs("EMPTY_VALUE")
+                      .AddProperty<string>("City")
+                      .AddOperation("LIKE", (x,y) => new LikeOperation(x,y));
 
         var parser = new FilterParser(options);
         var filter = parser.Parse(filterString);
@@ -103,7 +105,7 @@ public class OperatorFilterTests(ITestOutputHelper output) : BaseEFTest(output)
     }
 
     [Theory]
-    [InlineData("Contains Name a",20)]
+    [InlineData("Contains Name a",18)]
     public void TestContainsOperatorFilter(string filterString, int expectedCount)
     {
         ApplyFilterAndCheckCount(filterString, expectedCount);
@@ -112,6 +114,20 @@ public class OperatorFilterTests(ITestOutputHelper output) : BaseEFTest(output)
     [Theory]
     [InlineData("Like Name a%",1)]
     public void TestLikeOperatorFilter(string filterString, int expectedCount)
+    {
+        ApplyFilterAndCheckCount(filterString, expectedCount);
+    }
+
+    [Theory]
+    [InlineData("Eq Name NULL_VALUE",2)]
+    public void TestNullFilter(string filterString, int expectedCount)
+    {
+        ApplyFilterAndCheckCount(filterString, expectedCount);
+    }
+
+    [Theory]
+    [InlineData("Eq Name EMPTY_VALUE",1)]
+    public void TestEmptyValueFilter(string filterString, int expectedCount)
     {
         ApplyFilterAndCheckCount(filterString, expectedCount);
     }

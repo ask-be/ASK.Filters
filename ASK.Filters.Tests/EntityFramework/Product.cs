@@ -15,7 +15,7 @@ public class Product
 
     public Product(){}
 
-    public Product(int id, string name, decimal price, bool isOutOfStock, DateTime creationDate, ICollection<Address> addresses)
+    public Product(int id, string? name, decimal price, bool isOutOfStock, DateTime creationDate, ICollection<Address> addresses)
     {
         Id = id;
         Name = name;
@@ -43,9 +43,9 @@ public class Product
         new Product(7, "Bluetooth Speaker", 89.99m, false, new DateTime(2023, 7, 15), []),
         new Product(8, "Tablet Pro", 599.99m, true, new DateTime(2023, 8, 20), []),
         new Product(9, "Digital Camera", 749.99m, false, new DateTime(2023, 9, 1), []),
-        new Product(10, "Fitness Tracker", 149.99m, true, new DateTime(2023, 10, 10), []),
+        new Product(10, null, 149.99m, true, new DateTime(2023, 10, 10), []),
         new Product(11, "E-Reader", 129.99m, false, new DateTime(2023, 11, 25), []),
-        new Product(12, "VR Headset", 399.99m, true, new DateTime(2023, 12, 30), []),
+        new Product(12, null, 399.99m, true, new DateTime(2023, 12, 30), []),
         new Product(13, "Drone", 899.99m, false, new DateTime(2024, 1, 15), []),
         new Product(14, "Portable Charger", 49.99m, true, new DateTime(2024, 2, 20), []),
         new Product(15, "Smart Home Hub", 199.99m, false, new DateTime(2024, 3, 5), []),
@@ -58,7 +58,8 @@ public class Product
         new Product(22, "Electric Toothbrush", 79.99m, true, new DateTime(2023, 12, 30), []),
         new Product(23, "Smart Thermostat", 199.99m, false, new DateTime(2024, 11, 25), []),
         new Product(24, "Security Camera", 149.99m, true, new DateTime(2023, 12, 30), []),
-        new Product(25, "Wireless Charger", 39.99m, false, new DateTime(2025, 1, 15), [])
+        new Product(25, "Wireless Charger", 39.99m, false, new DateTime(2025, 1, 15), []),
+        new Product(26, "", 390.99m, true, new DateTime(2045, 1, 15), [])
     ];
 }
 

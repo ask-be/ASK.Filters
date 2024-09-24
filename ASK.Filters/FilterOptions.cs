@@ -18,7 +18,22 @@ public class FilterOptions
     private readonly Dictionary<string, CreateUnaryOperationFunc> _unaryOperations = new();
     private readonly Dictionary<string, CreatePropertyOperationFunc> _propertyOperations = new();
 
+    /// <summary>
+    /// CultureInfo used while converting string value to property types.
+    /// </summary>
     public CultureInfo CultureInfo { get; }
+
+    /// <summary>
+    /// Value that must be considered as NULL
+    /// Default value is NULL.
+    /// </summary>
+    public string? NullValue { get; private set; } = "NULL";
+
+    /// <summary>
+    /// String value that must be considered as empty string.
+    /// Default value is EMPTY.
+    /// </summary>
+    public string? StringEmptyValue { get; private set;} = "EMPTY";
 
     private readonly List<FilterProperty> _availableFilterProperties;
     private readonly Dictionary<Type, Func<string, object>> _converters = new();
@@ -45,7 +60,7 @@ public class FilterOptions
         AddOperation("START", (x,y) => new StartWithOperation(x,y));
         AddOperation("END", (x,y) => new EndWithOperation(x,y));
 
-        AddConverter<string>(x => x);
+        AddConverter<string>(x => x == StringEmptyValue ? string.Empty : x);
         AddConverter(x => x.Length == 1 ? x[0] : throw new FormatException($"Cannot convert {x} to char"));
         AddConverter(x => int.Parse(x, CultureInfo));
         AddConverter(x => long.Parse(x, CultureInfo));
@@ -76,8 +91,11 @@ public class FilterOptions
         return _availableFilterProperties.Find(p => p.Name.Equals(propertyName, StringComparison.InvariantCultureIgnoreCase));
     }
 
-    internal object ConvertToType(string value, Type type)
+    internal object? ConvertToType(string value, Type type)
     {
+        if (value == NullValue)
+            return null;
+
         if (_converters.TryGetValue(type, out var converter))
         {
             return converter(value);
@@ -119,6 +137,30 @@ public class FilterOptions
     public FilterOptions AddOperation(string name, CreatePropertyOperationFunc createOperation)
     {
         _propertyOperations.Add(name.ToUpper(), createOperation);
+        return this;
+    }
+
+    public FilterOptions WithNullValueAs(string nullValue)
+    {
+        NullValue = nullValue;
+        return this;
+    }
+
+    public FilterOptions WithoutNullValueAs()
+    {
+        NullValue = null;
+        return this;
+    }
+
+    public FilterOptions WithStringEmptyAs(string stringEmptyValue)
+    {
+        StringEmptyValue = stringEmptyValue;
+        return this;
+    }
+
+    public FilterOptions WithoutStringEmptyAs()
+    {
+        StringEmptyValue = null;
         return this;
     }
 
