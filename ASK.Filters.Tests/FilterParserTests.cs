@@ -22,7 +22,7 @@ public class FilterParserTests
 
         var andQuery = "and eq firstname John eq lastname Doe";
 
-        var filter = new FilterParser(o).Parse(andQuery);
+        var filter = new FilterPolishNotationParser(o).Parse(andQuery);
 
         filter.Operation.Should().BeAssignableTo<AndOperation>();
 
@@ -38,7 +38,7 @@ public class FilterParserTests
         ]);
         o.AddConverter(Enum.Parse<TestEnum>);
 
-        var filter = new FilterParser(o).Parse("eq enu Val1");
+        var filter = new FilterPolishNotationParser(o).Parse("eq enu Val1");
         filter.Operation.Should().BeAssignableTo<EqualOperation>();
 
         ((EqualOperation)filter.Operation).Value.Should().Be(TestEnum.Val1);

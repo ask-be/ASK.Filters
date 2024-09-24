@@ -6,7 +6,7 @@ namespace ASK.Filters.Tests;
 
 public class FilterOperationsTests
 {
-    private readonly FilterParser _parser = new (new FilterOptions([
+    private readonly FilterPolishNotationParser _parser = new (new FilterOptions([
         new FilterProperty<string>("Name"),
         new FilterProperty<int>("Quantity"),
         new FilterProperty<decimal>("Price"),

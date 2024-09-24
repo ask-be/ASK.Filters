@@ -8,9 +8,9 @@ public class FilterExpressionBuilderTests
     [Fact]
     public void CanFilterProductByPrice()
     {
-        var parser = new FilterParser(new FilterOptions<Product>());
+        var parser = new FilterPolishNotationParser(new FilterOptions<Product>());
         var filter = parser.Parse("gt price 150");
-        Product.SampleValues.ApplyFilter(filter).Count().Should().Be(16);
+        Product.SampleValues.ApplyFilter(filter).Count().Should().Be(17);
     }
 
 }

@@ -1,12 +1,11 @@
 using System.Globalization;
 using ASK.Filters.Operations;
-using ASK.Filters.Tokenizers;
 
 namespace ASK.Filters;
 
 public delegate IOperation CreateBinaryOperationFunc(IOperation left, IOperation right);
 public delegate IOperation CreateUnaryOperationFunc(IOperation operation);
-public delegate IOperation CreatePropertyOperationFunc(string name, object value);
+public delegate IOperation CreatePropertyOperationFunc(string name, object? value);
 
 public record FilterProperty(string Name, Type Type);
 
@@ -107,7 +106,6 @@ public class FilterOptions
     public IReadOnlyDictionary<string,CreateUnaryOperationFunc> UnaryOperations => _unaryOperations;
     public IReadOnlyDictionary<string,CreatePropertyOperationFunc> PropertyOperations => _propertyOperations;
 
-    public ITokenizer Tokenizer { get; private set; } = new DefaultTokenizer();
     public IReadOnlyList<FilterProperty> FilterProperties => _availableFilterProperties;
 
     public FilterOptions AddConverter<T>(Func<string, T> converter)
@@ -161,12 +159,6 @@ public class FilterOptions
     public FilterOptions WithoutStringEmptyAs()
     {
         StringEmptyValue = null;
-        return this;
-    }
-
-    public FilterOptions WithTokenizer(ITokenizer tokenizer)
-    {
-        Tokenizer = tokenizer;
         return this;
     }
 

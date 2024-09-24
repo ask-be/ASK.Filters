@@ -17,7 +17,7 @@ public class InvalidFilterTests
     [InlineData("And Eq IsOutOfStock")]
     public void InvalidCastFilter(string filter)
     {
-        var parser = new FilterParser(new FilterOptions<Product>());
+        var parser = new FilterPolishNotationParser(new FilterOptions<Product>());
         Assert.Throws<FormatException>(() => parser.Parse(filter));
     }
 }

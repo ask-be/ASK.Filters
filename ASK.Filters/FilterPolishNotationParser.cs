@@ -1,17 +1,14 @@
-using System.Globalization;
-using System.Linq.Expressions;
-using System.Numerics;
 using ASK.Filters.Operations;
 
 namespace ASK.Filters;
 
-public class FilterParser(FilterOptions filterOptions)
+public class FilterPolishNotationParser(FilterOptions filterOptions, bool reverse = false)
 {
     public FilterOptions Options { get; } = filterOptions;
 
     public Filter Parse(string filter)
     {
-        var tokens = Options.Tokenizer.Tokenize(filter);
+        var tokens = reverse ? TokenizeReverse(filter) : Tokenize(filter);
         return new Filter(filter, GetOperation(tokens));
     }
 
@@ -19,8 +16,7 @@ public class FilterParser(FilterOptions filterOptions)
     {
         try
         {
-            var tokens = Options.Tokenizer.Tokenize(filter);
-            result = new Filter(filter, GetOperation(tokens));
+            result = Parse(filter);
         }
         catch (Exception)
         {
@@ -69,5 +65,15 @@ public class FilterParser(FilterOptions filterOptions)
         }
 
         throw new FormatException("Invalid operation type");
+    }
+
+    private Stack<string> Tokenize(string input)
+    {
+        return new Stack<string>(input.Split(' ', StringSplitOptions.RemoveEmptyEntries).Reverse());
+    }
+
+    public Stack<string> TokenizeReverse(string input)
+    {
+        return new Stack<string>(input.Split(' ', StringSplitOptions.RemoveEmptyEntries));
     }
 }
