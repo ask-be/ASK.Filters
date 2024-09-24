@@ -11,7 +11,7 @@ public record LikeOperation : PropertyOperation
         .GetMethod(nameof(DbFunctionsExtensions.Like), [typeof(DbFunctions), typeof(string), typeof(string)])!;
     private static readonly Expression EfFunctions = Expression.Constant(EF.Functions);
 
-    public LikeOperation(string Name, object Value) : base(Name, Value)
+    public LikeOperation(string Name, object? Value) : base(Name, Value)
     {
         if(Value is not string)
             throw new FormatException("Like value must be a string");
