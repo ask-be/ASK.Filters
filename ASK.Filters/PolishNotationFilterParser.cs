@@ -31,7 +31,7 @@ public class PolishNotationFilterParser(FilterOptions filterOptions, bool revers
 
     private IOperation GetOperation(Stack<string> tokens)
     {
-        if(tokens.Count == 0)
+        if (tokens.Count == 0)
             throw new FormatException();
 
         var operatorType = tokens.Pop().ToUpper();
@@ -41,7 +41,7 @@ public class PolishNotationFilterParser(FilterOptions filterOptions, bool revers
             var left = GetOperation(tokens);
             var right = GetOperation(tokens);
 
-            return binaryOperation(left,right);
+            return binaryOperation(left, right);
         }
 
         if (Options.UnaryOperations.TryGetValue(operatorType, out var unaryOperation))
@@ -53,7 +53,7 @@ public class PolishNotationFilterParser(FilterOptions filterOptions, bool revers
 
         if (Options.PropertyOperations.TryGetValue(operatorType, out var propertyOperation))
         {
-            if(tokens.Count < 2)
+            if (tokens.Count < 2)
                 throw new FormatException();
 
             var propertyName = tokens.Pop();

@@ -12,7 +12,7 @@ public class FilterEvaluator<T>
         ArgumentNullException.ThrowIfNull(filter);
 
         var parameter = Expression.Parameter(typeof(T), "x");
-        var expression = GetOperationExpression(parameter,filter.Operation);
+        var expression = GetOperationExpression(parameter, filter.Operation);
         return Expression.Lambda<Func<T, bool>>(expression, parameter);
     }
 

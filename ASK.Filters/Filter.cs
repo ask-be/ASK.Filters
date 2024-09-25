@@ -8,7 +8,7 @@ public record Filter
     {
         ArgumentNullException.ThrowIfNull(Value);
         ArgumentNullException.ThrowIfNull(Operation);
-        
+
         this.Value = Value;
         this.Operation = Operation;
     }

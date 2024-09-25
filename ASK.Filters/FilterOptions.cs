@@ -20,53 +20,35 @@ public record FilterProperty<T>(string Name) : FilterProperty(Name, typeof(T));
 
 public class FilterOptions
 {
-    private readonly Dictionary<string, Func<IOperation,IOperation,IOperation>> _binaryOperations = new();
-    private readonly Dictionary<string, Func<IOperation,IOperation>> _unaryOperations = new();
-    private readonly Dictionary<string, Func<string,object?,IOperation>> _propertyOperations = new();
-
     private readonly List<FilterProperty> _availableFilterProperties;
     private readonly Dictionary<Type, Func<string, object>> _converters = new();
-
-    /// <summary>
-    /// CultureInfo used while converting string value to property types.
-    /// </summary>
-    public CultureInfo CultureInfo { get; }
-
-    /// <summary>
-    /// Value that must be considered as NULL
-    /// Default value is NULL.
-    /// </summary>
-    public string? NullValue { get; private set; }
-
-    /// <summary>
-    /// String value that must be considered as empty string.
-    /// Default value is EMPTY.
-    /// </summary>
-    public string? StringEmptyValue { get; private set;}
+    private readonly Dictionary<string, Func<IOperation, IOperation, IOperation>> _binaryOperations = new();
+    private readonly Dictionary<string, Func<string, object?, IOperation>> _propertyOperations = new();
+    private readonly Dictionary<string, Func<IOperation, IOperation>> _unaryOperations = new();
 
     public FilterOptions(IEnumerable<FilterProperty> properties, CultureInfo? cultureInfo = null)
     {
         ArgumentNullException.ThrowIfNull(properties);
 
         _availableFilterProperties = properties.ToList();
-        if(_availableFilterProperties.Count == 0)
+        if (_availableFilterProperties.Count == 0)
             throw new ArgumentException("At least one filter property is required.");
 
         CultureInfo = cultureInfo ?? CultureInfo.InvariantCulture;
 
-        AddOperation("AND", (x,y) => new AndOperation(x,y));
-        AddOperation("OR", (x,y) => new OrOperation(x,y));
+        AddOperation("AND", (x, y) => new AndOperation(x, y));
+        AddOperation("OR", (x, y) => new OrOperation(x, y));
 
         AddOperation("NOT", x => new NotOperation(x));
 
-        AddOperation("EQ", (x,y) => new EqualOperation(x,y));
-        AddOperation("GT", (x,y) => new GreaterThanOperation(x,y));
-        AddOperation("GTE", (x,y) => new GreaterThanOrEqualOperation(x,y));
-        AddOperation("LT", (x,y) => new LessThanOperation(x,y));
-        AddOperation("LTE", (x,y) => new LessThanOrEqualOperation(x,y));
-        AddOperation("CONTAINS", (x,y) => new ContainsOperation(x,y));
-        AddOperation("START", (x,y) => new StartWithOperation(x,y));
-        AddOperation("END", (x,y) => new EndWithOperation(x,y));
+        AddOperation("EQ", (x, y) => new EqualOperation(x, y));
+        AddOperation("GT", (x, y) => new GreaterThanOperation(x, y));
+        AddOperation("GTE", (x, y) => new GreaterThanOrEqualOperation(x, y));
+        AddOperation("LT", (x, y) => new LessThanOperation(x, y));
+        AddOperation("LTE", (x, y) => new LessThanOrEqualOperation(x, y));
+        AddOperation("CONTAINS", (x, y) => new ContainsOperation(x, y));
+        AddOperation("START", (x, y) => new StartWithOperation(x, y));
+        AddOperation("END", (x, y) => new EndWithOperation(x, y));
 
         AddConverter<string>(x => x == StringEmptyValue ? string.Empty : x);
         AddConverter(x => x.Length == 1 ? x[0] : throw new FormatException($"Cannot convert {x} to char"));
@@ -90,9 +72,32 @@ public class FilterOptions
     }
 
     public FilterOptions(Type type, CultureInfo? cultureInfo = null)
-        :this(type.GetProperties().Select(x => new FilterProperty(x.Name, x.PropertyType)), cultureInfo)
+        : this(type.GetProperties().Select(x => new FilterProperty(x.Name, x.PropertyType)), cultureInfo)
     {
     }
+
+    /// <summary>
+    ///     CultureInfo used while converting string value to property types.
+    /// </summary>
+    public CultureInfo CultureInfo { get; }
+
+    /// <summary>
+    ///     Value that must be considered as NULL
+    ///     Default value is NULL.
+    /// </summary>
+    public string? NullValue { get; private set; }
+
+    /// <summary>
+    ///     String value that must be considered as empty string.
+    ///     Default value is EMPTY.
+    /// </summary>
+    public string? StringEmptyValue { get; private set; }
+
+    public IReadOnlyDictionary<string, Func<IOperation, IOperation, IOperation>> BinaryOperations => _binaryOperations;
+    public IReadOnlyDictionary<string, Func<IOperation, IOperation>> UnaryOperations => _unaryOperations;
+    public IReadOnlyDictionary<string, Func<string, object?, IOperation>> PropertyOperations => _propertyOperations;
+
+    public IReadOnlyList<FilterProperty> FilterProperties => _availableFilterProperties;
 
     internal FilterProperty? GetPropertyByName(string propertyName)
     {
@@ -105,20 +110,13 @@ public class FilterOptions
             return null;
 
         if (_converters.TryGetValue(type, out var converter))
-        {
             return converter(value);
-        }
+
         throw new FormatException($"Cannot convert {value} to type {type}");
     }
 
-    public IReadOnlyDictionary<string,Func<IOperation,IOperation,IOperation>> BinaryOperations => _binaryOperations;
-    public IReadOnlyDictionary<string,Func<IOperation,IOperation>> UnaryOperations => _unaryOperations;
-    public IReadOnlyDictionary<string,Func<string,object?,IOperation>> PropertyOperations => _propertyOperations;
-
-    public IReadOnlyList<FilterProperty> FilterProperties => _availableFilterProperties;
-
     /// <summary>
-    /// Add a converter from string to a Type used by a FilterProperty.
+    ///     Add a converter from string to a Type used by a FilterProperty.
     /// </summary>
     /// <param name="converter"></param>
     /// <typeparam name="T"></typeparam>
@@ -132,7 +130,7 @@ public class FilterOptions
     }
 
     /// <summary>
-    /// Remove all registered operations.
+    ///     Remove all registered operations.
     /// </summary>
     /// <returns>Current FilterOptions for chaining</returns>
     public FilterOptions ClearOperations()
@@ -144,12 +142,12 @@ public class FilterOptions
     }
 
     /// <summary>
-    /// Add a Binary Operation that combines two other operations such as AND and OR.
+    ///     Add a Binary Operation that combines two other operations such as AND and OR.
     /// </summary>
     /// <param name="name">Name of the operation in the filter</param>
     /// <param name="createOperation">Factory to create the Operation</param>
     /// <returns>Current FilterOptions for chaining</returns>
-    public FilterOptions AddOperation(string name, Func<IOperation,IOperation,IOperation> createOperation)
+    public FilterOptions AddOperation(string name, Func<IOperation, IOperation, IOperation> createOperation)
     {
         ArgumentNullException.ThrowIfNull(name);
         ArgumentNullException.ThrowIfNull(createOperation);
@@ -159,12 +157,12 @@ public class FilterOptions
     }
 
     /// <summary>
-    /// Add an Unary Operation that combines two other operations such as NOT.
+    ///     Add a Unary Operation that combines two other operations such as NOT.
     /// </summary>
     /// <param name="name">Name of the operation in the filter</param>
     /// <param name="createOperation">Factory to create the Operation</param>
     /// <returns>Current FilterOptions for chaining</returns>
-    public FilterOptions AddOperation(string name, Func<IOperation,IOperation> createOperation)
+    public FilterOptions AddOperation(string name, Func<IOperation, IOperation> createOperation)
     {
         ArgumentNullException.ThrowIfNull(name);
         ArgumentNullException.ThrowIfNull(createOperation);
@@ -174,12 +172,12 @@ public class FilterOptions
     }
 
     /// <summary>
-    /// Add a Operation that can be performed on Property such as Equal, GreaterThan, ...
+    ///     Add an Operation that can be performed on Property such as Equal, GreaterThan, ...
     /// </summary>
     /// <param name="name">Name of the operation in the filter</param>
     /// <param name="createOperation">Factory to create the Operation</param>
     /// <returns>Current FilterOptions for chaining</returns>
-    public FilterOptions AddOperation(string name, Func<string,object?,IOperation> createOperation)
+    public FilterOptions AddOperation(string name, Func<string, object?, IOperation> createOperation)
     {
         ArgumentNullException.ThrowIfNull(name);
         ArgumentNullException.ThrowIfNull(createOperation);
@@ -189,7 +187,7 @@ public class FilterOptions
     }
 
     /// <summary>
-    /// Specify the value that must be considered as NULL
+    ///     Specify the value that must be considered as NULL
     /// </summary>
     /// <param name="nullValue">The NULL value</param>
     /// <returns>Current FilterOptions for chaining</returns>
@@ -202,7 +200,7 @@ public class FilterOptions
     }
 
     /// <summary>
-    /// Remove support for NULL value
+    ///     Remove support for NULL value
     /// </summary>
     /// <returns>Current FilterOptions for chaining</returns>
     public FilterOptions WithoutNullValue()
@@ -212,8 +210,8 @@ public class FilterOptions
     }
 
     /// <summary>
-    /// Specify the value that must be considered as an Empty String
-    /// <remarks>Only usable for Properties of type string</remarks>
+    ///     Specify the value that must be considered as an Empty String
+    ///     <remarks>Only usable for Properties of type string</remarks>
     /// </summary>
     /// <returns>Current FilterOptions for chaining</returns>
     public FilterOptions WithStringEmpty(string stringEmptyValue)
@@ -225,7 +223,7 @@ public class FilterOptions
     }
 
     /// <summary>
-    /// Remove support for Empty strings
+    ///     Remove support for Empty strings
     /// </summary>
     /// <returns>Current FilterOptions for chaining</returns>
     public FilterOptions WithoutStringEmpty()
@@ -235,7 +233,7 @@ public class FilterOptions
     }
 
     /// <summary>
-    /// Add a Property that can be used in the filter
+    ///     Add a Property that can be used in the filter
     /// </summary>
     /// <param name="name">Property Name</param>
     /// <typeparam name="T">Property Type</typeparam>

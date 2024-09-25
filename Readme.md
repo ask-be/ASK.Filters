@@ -1,6 +1,8 @@
 # ASK.Filters
 
-**ASK.Filters** is a C# library that converts `WHERE` clauses written in Polish notation into expressions that can be used with EntityFramework or any IEnumerable. This library is particularly useful for REST APIs, allowing complex filters to be specified directly in the URL.
+**ASK.Filters** is a C# library that converts `WHERE` clauses written in Polish notation into expressions that can be
+used with EntityFramework or any IEnumerable. This library is particularly useful for REST APIs, allowing complex
+filters to be specified directly in the URL.
 
 ## Features
 
@@ -8,9 +10,9 @@
 - Operations AND, OR, NOT, EQ, GT, GTE, LT, LTE, CONTAINS, START and END included
 - No dependencies between API and Infrastructure layers.
 - Easily configurable:
-  - Add custom operations.
-  - Add custom converters (useful with ValueType mapping in Entity Framework).
-  - Use custom evaluators to generate complex expressions if required.
+    - Add custom operations.
+    - Add custom converters (useful with ValueType mapping in Entity Framework).
+    - Use custom evaluators to generate complex expressions if required.
 
 ## Installation
 
@@ -71,11 +73,15 @@ using (var context = new BookContext())
 
 ## Customizing Query Generation
 
-ASK.Filters allows for advanced customization of query generation. By default, the library maps a filter property directly to a property on the object being filtered. However, you can extend this behavior by adding custom operations, specific converters (particularly useful for ValueType mapping in Entity Framework), and custom evaluators to generate complex expressions as needed.
+ASK.Filters allows for advanced customization of query generation. By default, the library maps a filter property
+directly to a property on the object being filtered. However, you can extend this behavior by adding custom operations,
+specific converters (particularly useful for ValueType mapping in Entity Framework), and custom evaluators to generate
+complex expressions as needed.
 
 ### Example of Custom Operation
 
-To create a custom operation, such as the `LIKE` method in EntityFramework, start by creating the `LikeOperation` class inheriting from `PropertyOperation`:
+To create a custom operation, such as the `LIKE` method in EntityFramework, start by creating the `LikeOperation` class
+inheriting from `PropertyOperation`:
 
 ```csharp
 public record LikeOperation : PropertyOperation
@@ -112,7 +118,8 @@ LIKE Name V?nc%
 
 ### Customization of operation names in query
 
-BY default AND, OR, NOT, EQ, GT, GTE, LT, LTE, CONTAINS, START and END operations are included in the FilterOptions bu you can customize this for you own abbreviation if you like.
+BY default AND, OR, NOT, EQ, GT, GTE, LT, LTE, CONTAINS, START and END operations are included in the FilterOptions bu
+you can customize this for you own abbreviation if you like.
 
 ```csharp
 var options = new FilterOptions(...)
@@ -121,6 +128,7 @@ var options = new FilterOptions(...)
     .AddOperation("OU", (left, right) => new OrOperation(left, right))
     .AddOperation("EGAL", (name, value) => new EqualOperation(name, value));
 ```
+
 Example:
 
 ```
@@ -128,7 +136,9 @@ ET EGAL FirstName John EGAL LastName Doe
 ```
 
 ### Example of Custom Evaluator
-Let’s say you want a filter on the FirstName of a User to match either the FirstName or the PhoneticFirstName properties. You can achieve this by creating a custom evaluator:
+
+Let’s say you want a filter on the FirstName of a User to match either the FirstName or the PhoneticFirstName
+properties. You can achieve this by creating a custom evaluator:
 
 ```csharp
 public class UserFilterEvaluator : FilterEvaluator<User>

@@ -11,7 +11,7 @@ public record AndOperation(IOperation LeftOperation, IOperation RightOperation) 
 {
     public override BinaryExpression GetExpression(Expression leftOperation, Expression rightOperation)
     {
-        return Expression.AndAlso(leftOperation,rightOperation);
+        return Expression.AndAlso(leftOperation, rightOperation);
     }
 }
 
@@ -19,6 +19,6 @@ public record OrOperation(IOperation LeftOperation, IOperation RightOperation) :
 {
     public override BinaryExpression GetExpression(Expression leftOperation, Expression rightOperation)
     {
-        return Expression.Or(leftOperation,rightOperation);
+        return Expression.Or(leftOperation, rightOperation);
     }
 }

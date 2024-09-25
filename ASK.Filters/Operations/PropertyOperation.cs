@@ -20,7 +20,7 @@ public record GreaterThanOperation : PropertyOperation
 {
     public GreaterThanOperation(string Name, object? Value) : base(Name, Value)
     {
-        if(Value is string)
+        if (Value is string)
             throw new FormatException("GreaterThan value cannot be a string");
     }
 
@@ -34,7 +34,7 @@ public record GreaterThanOrEqualOperation : PropertyOperation
 {
     public GreaterThanOrEqualOperation(string Name, object? Value) : base(Name, Value)
     {
-        if(Value is string)
+        if (Value is string)
             throw new FormatException("GreaterThanOrEqual value cannot be a string");
     }
 
@@ -48,7 +48,7 @@ public record LessThanOperation : PropertyOperation
 {
     public LessThanOperation(string Name, object? Value) : base(Name, Value)
     {
-        if(Value is string)
+        if (Value is string)
             throw new FormatException("GreaterThanOrEqual value cannot be a string");
     }
 
@@ -62,7 +62,7 @@ public record LessThanOrEqualOperation : PropertyOperation
 {
     public LessThanOrEqualOperation(string Name, object? Value) : base(Name, Value)
     {
-        if(Value is string)
+        if (Value is string)
             throw new FormatException("GreaterThanOrEqual value cannot be a string");
     }
 
@@ -74,11 +74,11 @@ public record LessThanOrEqualOperation : PropertyOperation
 
 public record ContainsOperation : PropertyOperation
 {
-    private static readonly MethodInfo ContainsMethod = typeof(string).GetMethod("Contains",BindingFlags.Instance | BindingFlags.Public , [typeof(string)])!;
+    private static readonly MethodInfo ContainsMethod = typeof(string).GetMethod("Contains", BindingFlags.Instance | BindingFlags.Public, [typeof(string)])!;
 
     public ContainsOperation(string Name, object? Value) : base(Name, Value)
     {
-        if(Value is not string)
+        if (Value is not string)
             throw new FormatException("Contains value must be a string");
     }
 
@@ -90,11 +90,11 @@ public record ContainsOperation : PropertyOperation
 
 public record StartWithOperation : PropertyOperation
 {
-    private static readonly MethodInfo StartWithMethod = typeof(string).GetMethod("StartWith",BindingFlags.Instance | BindingFlags.Public , [typeof(string)])!;
+    private static readonly MethodInfo StartWithMethod = typeof(string).GetMethod("StartWith", BindingFlags.Instance | BindingFlags.Public, [typeof(string)])!;
 
     public StartWithOperation(string Name, object? Value) : base(Name, Value)
     {
-        if(Value is not string)
+        if (Value is not string)
             throw new FormatException("StartWith value must be a string");
     }
 
@@ -106,11 +106,11 @@ public record StartWithOperation : PropertyOperation
 
 public record EndWithOperation : PropertyOperation
 {
-    private static readonly MethodInfo EndWithMethod = typeof(string).GetMethod("EndWith",BindingFlags.Instance | BindingFlags.Public , [typeof(string)])!;
+    private static readonly MethodInfo EndWithMethod = typeof(string).GetMethod("EndWith", BindingFlags.Instance | BindingFlags.Public, [typeof(string)])!;
 
     public EndWithOperation(string Name, object? Value) : base(Name, Value)
     {
-        if(Value is not string)
+        if (Value is not string)
             throw new FormatException("EndWith value must be a string");
     }
 
