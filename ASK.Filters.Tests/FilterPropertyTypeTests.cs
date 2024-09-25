@@ -7,7 +7,7 @@ public record CustomId(string Value);
 
 public class FilterPropertyTypeTests
 {
-    private readonly FilterPolishNotationParser _parser = new (new FilterOptions([
+    private readonly PolishNotationFilterParser _parser = new (new FilterOptions([
         new FilterProperty<string>("Name"),
         new FilterProperty<int>("Quantity"),
         new FilterProperty<decimal>("Price"),
@@ -104,7 +104,7 @@ public class FilterPropertyTypeTests
     [Fact]
     public void ParseAndFilter()
     {
-        var parser = new FilterPolishNotationParser(new FilterOptions([
+        var parser = new PolishNotationFilterParser(new FilterOptions([
             new FilterProperty<string>("Name"),
             new FilterProperty<DateTime>("Birthdate")
         ]));

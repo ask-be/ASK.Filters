@@ -45,12 +45,16 @@ string query = "AND CONTAINS author John EQUAL publicationyear 1998";
 
 // Create FilterOptions that contain all the available values and operations of the filter 
 var filterOptions = new FilterOptions([
-    new FilterProperty<string>("author"),
-    new FilterProperty<int>("publicationyear")
-]);
+                        new FilterProperty<string>("author"),
+                        new FilterProperty<int>("publicationyear"),
+                        new FilterProperty<AuthorId>("authorId") // Property with Custom Type
+                    ])
+                    .AddConverter(x => new AuthorId(x)) // Custom Type Converter
+                    .WithNullValue("[NULL]")   // Property value used to replace NULL
+                    .WithNullValue("[EMPTY]"); // Property value used to replace an empty string
 
 // Once you have filter options, create a parser
-var filterParser = new FilterParser(filterOptions);
+var filterParser = new PolishNotationFilterParser(filterOptions);
 
 // Parse your filter
 var filter = filterParser.Parse(query);

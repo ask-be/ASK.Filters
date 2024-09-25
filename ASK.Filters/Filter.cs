@@ -1,12 +1,24 @@
-using System.Linq.Expressions;
-using System.Runtime.CompilerServices;
 using ASK.Filters.Operations;
 
 namespace ASK.Filters;
 
-public class Filter(string value, IOperation operation)
+public record Filter
 {
-    public string Value { get; private set; } = value;
+    public Filter(string Value, IOperation Operation)
+    {
+        ArgumentNullException.ThrowIfNull(Value);
+        ArgumentNullException.ThrowIfNull(Operation);
+        
+        this.Value = Value;
+        this.Operation = Operation;
+    }
 
-    public IOperation Operation { get; private set; } = operation;
+    public string Value { get; }
+    public IOperation Operation { get; }
+
+    public void Deconstruct(out string value, out IOperation operation)
+    {
+        value = Value;
+        operation = Operation;
+    }
 }

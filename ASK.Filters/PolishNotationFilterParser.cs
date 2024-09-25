@@ -2,12 +2,14 @@ using ASK.Filters.Operations;
 
 namespace ASK.Filters;
 
-public class FilterPolishNotationParser(FilterOptions filterOptions, bool reverse = false)
+public class PolishNotationFilterParser(FilterOptions filterOptions, bool reverse = false)
 {
     public FilterOptions Options { get; } = filterOptions;
 
     public Filter Parse(string filter)
     {
+        ArgumentNullException.ThrowIfNull(filter);
+
         var tokens = reverse ? TokenizeReverse(filter) : Tokenize(filter);
         return new Filter(filter, GetOperation(tokens));
     }
@@ -67,12 +69,12 @@ public class FilterPolishNotationParser(FilterOptions filterOptions, bool revers
         throw new FormatException("Invalid operation type");
     }
 
-    private Stack<string> Tokenize(string input)
+    private static Stack<string> Tokenize(string input)
     {
         return new Stack<string>(input.Split(' ', StringSplitOptions.RemoveEmptyEntries).Reverse());
     }
 
-    public Stack<string> TokenizeReverse(string input)
+    private static Stack<string> TokenizeReverse(string input)
     {
         return new Stack<string>(input.Split(' ', StringSplitOptions.RemoveEmptyEntries));
     }

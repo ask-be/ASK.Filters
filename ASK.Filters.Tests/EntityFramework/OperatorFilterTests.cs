@@ -33,12 +33,12 @@ public class OperatorFilterTests(ITestOutputHelper output) : BaseEFTest(output)
     private void ApplyFilterAndCheckCount(string filterString, int expectedCount)
     {
         var options = new FilterOptions<Product>()
-                      .WithNullValueAs("NULL_VALUE")
-                      .WithStringEmptyAs("EMPTY_VALUE")
+                      .WithNullValue("NULL_VALUE")
+                      .WithStringEmpty("EMPTY_VALUE")
                       .AddProperty<string>("City")
                       .AddOperation("LIKE", (x,y) => new LikeOperation(x,y));
 
-        var parser = new FilterPolishNotationParser(options);
+        var parser = new PolishNotationFilterParser(options);
         var filter = parser.Parse(filterString);
         using var context = GetContext();
         context.Products.ApplyFilter(filter, new CustomProductFilterEvaluator()).Count().Should().Be(expectedCount);

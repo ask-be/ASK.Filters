@@ -9,6 +9,8 @@ public class FilterEvaluator<T>
 
     public Expression<Func<T, bool>> GetExpression(Filter filter)
     {
+        ArgumentNullException.ThrowIfNull(filter);
+
         var parameter = Expression.Parameter(typeof(T), "x");
         var expression = GetOperationExpression(parameter,filter.Operation);
         return Expression.Lambda<Func<T, bool>>(expression, parameter);
