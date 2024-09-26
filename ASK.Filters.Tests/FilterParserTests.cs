@@ -27,7 +27,7 @@ public class FilterParserTests
         filter.Operation.Should().BeAssignableTo<AndOperation>();
 
 
-        var expression = FilterEvaluator<User>.Default.GetExpression(filter);
+        var expression = FilterEvaluator<User>.Default.Evaluate(filter);
     }
 
     [Fact]

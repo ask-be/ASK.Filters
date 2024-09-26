@@ -7,13 +7,19 @@ namespace ASK.Filters.Tests.EntityFramework;
 
 public class CustomProductFilterEvaluator : FilterEvaluator<Product>
 {
-    protected override Expression GetPropertyExpression(ParameterExpression parameter, PropertyOperation property)
+    public CustomProductFilterEvaluator()
+    {
+        AddOperationEvaluator<LikeOperation>(new LikeOperationEvaluator());
+    }
+
+    protected override Expression EvaluatePropertyOperation(ParameterExpression parameter, PropertyOperation property)
     {
         if (property.Name == "City")
         {
             var addresses = Expression.Property(parameter, "Addresses");
             var addressParam = Expression.Parameter(typeof(Address), "y");
-            var condition = property.GetExpression(
+            var condition = EvaluateBinaryOperation(
+                property,
                 Expression.Property(addressParam, property.Name),
                 Expression.Constant(property.Value));
             return Expression.Call(
@@ -24,7 +30,7 @@ public class CustomProductFilterEvaluator : FilterEvaluator<Product>
                 Expression.Lambda<Func<Address, bool>>(condition, addressParam)
             );
         }
-        return base.GetPropertyExpression(parameter, property);
+        return base.EvaluatePropertyOperation(parameter, property);
     }
 }
 

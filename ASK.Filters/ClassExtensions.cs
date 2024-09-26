@@ -14,7 +14,7 @@ public static class ClassExtensions
         Filter filter,
         FilterEvaluator<TSource> filterEvaluator)
     {
-        return source.Where(filterEvaluator.GetExpression(filter));
+        return source.Where(filterEvaluator.Evaluate(filter));
     }
 
     public static IEnumerable<TSource> ApplyFilter<TSource>(
@@ -29,6 +29,6 @@ public static class ClassExtensions
         Filter filter,
         FilterEvaluator<TSource> filterEvaluator)
     {
-        return source.Where(filterEvaluator.GetExpression(filter).Compile());
+        return source.Where(filterEvaluator.Evaluate(filter).Compile());
     }
 }
