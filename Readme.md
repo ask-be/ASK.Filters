@@ -62,7 +62,7 @@ var filterParser = new PolishNotationFilterParser(filterOptions);
 var filter = filterParser.Parse(query);
 
 var filterEvaluator = new FilterEvaluator<Book>();
-var expression  = filterEvaluator.GetExpression(filter);
+var expression  = filterEvaluator.Evaluate(filter);
 
 // Use with EntityFramework
 using (var context = new BookContext())
@@ -86,19 +86,10 @@ inheriting from `PropertyOperation`:
 ```csharp
 public record LikeOperation : PropertyOperation
 {
-    private static readonly MethodInfo LikeMethod = typeof(DbFunctionsExtensions)
-        .GetMethod(nameof(DbFunctionsExtensions.Like), new[] { typeof(DbFunctions), typeof(string), typeof(string) })!;
-    private static readonly Expression EfFunctions = Expression.Constant(EF.Functions);
-
-    public LikeOperation(string name, object value) : base(name, value)
+    public LikeOperation(string Name, object? Value) : base(Name, Value)
     {
-        if (value is not string)
+        if(Value is not string)
             throw new FormatException("Like value must be a string");
-    }
-
-    public override Expression GetExpression(Expression left, Expression right)
-    {
-        return Expression.Call(LikeMethod, EfFunctions, left, right);
     }
 }
 ```
@@ -114,6 +105,24 @@ You can now use the `LIKE` keyword in your filters:
 
 ```
 LIKE Name V?nc%
+```
+
+To Convert the Filter into an Expression you need to to create the corresponding OperationEvaluator
+```csharp
+public class LikeOperationEvaluator : IBinaryOperationEvaluator
+{
+    private static readonly MethodInfo LikeMethod = typeof(DbFunctionsExtensions)
+        .GetMethod(nameof(DbFunctionsExtensions.Like), [typeof(DbFunctions), typeof(string), typeof(string)])!;
+    private static readonly Expression EfFunctions = Expression.Constant(EF.Functions);
+
+    public Expression Evaluate(Expression left, Expression right) =>  Expression.Call(LikeMethod, EfFunctions, left, right);
+}
+```
+
+And add the OperationEvaluator to the FilterEvaluator
+
+```csharp
+    FilterEvaluator<T>.AddOperationEvaluator<LikeOperator>(new LikeOperationEvaluator());
 ```
 
 ### Customization of operation names in query
