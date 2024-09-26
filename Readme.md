@@ -122,7 +122,9 @@ public class LikeOperationEvaluator : IBinaryOperationEvaluator
 And add the OperationEvaluator to the FilterEvaluator
 
 ```csharp
-    FilterEvaluator<T>.AddOperationEvaluator<LikeOperator>(new LikeOperationEvaluator());
+var filterEvaluator = new FilterEvaluator<Book>();
+filterEvaluator.AddOperationEvaluator<LikeOperator>(new LikeOperationEvaluator());
+var expression  = filterEvaluator.Evaluate(filter);
 ```
 
 ### Customization of operation names in query
