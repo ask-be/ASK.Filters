@@ -53,7 +53,7 @@ var filterOptions = new FilterOptions([
                     ])
                     .AddConverter(x => new AuthorId(x)) // Custom Type Converter
                     .WithNullValue("[NULL]")   // Property value used to replace NULL
-                    .WithNullValue("[EMPTY]"); // Property value used to replace an empty string
+                    .WithStringEmpty("[EMPTY]"); // Property value used to replace an empty string
 
 // Once you have filter options, create a parser
 var filterParser = new PolishNotationFilterParser(filterOptions);
