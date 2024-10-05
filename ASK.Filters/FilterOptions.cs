@@ -50,7 +50,13 @@ public class FilterOptions
         AddOperation("START", (x, y) => new StartWithOperation(x, y));
         AddOperation("END", (x, y) => new EndWithOperation(x, y));
 
-        AddConverter<string>(x => x == StringEmptyValue ? string.Empty : x);
+        AddConverter<string>(x =>
+        {
+            if(x == StringEmptyValue)
+                return string.Empty;
+
+            return StringWithSpaceValue is not null ? x.Replace(StringWithSpaceValue, " ") : x;
+        });
         AddConverter(x => x.Length == 1 ? x[0] : throw new FormatException($"Cannot convert {x} to char"));
         AddConverter(x => int.Parse(x, CultureInfo));
         AddConverter(x => long.Parse(x, CultureInfo));
@@ -85,13 +91,19 @@ public class FilterOptions
     ///     Value that must be considered as NULL
     ///     Default value is NULL.
     /// </summary>
-    public string? NullValue { get; private set; }
+    public string? NullValue { get; private set; } = "NULL";
 
     /// <summary>
     ///     String value that must be considered as empty string.
     ///     Default value is EMPTY.
     /// </summary>
-    public string? StringEmptyValue { get; private set; }
+    public string? StringEmptyValue { get; private set; } = "EMPTY";
+
+    /// <summary>
+    ///     String value that must be considered as a white space in the string.
+    ///     Default value is "_".
+    /// </summary>
+    public string? StringWithSpaceValue { get; private set; } = "_";
 
     public IReadOnlyDictionary<string, Func<IOperation, IOperation, IOperation>> BinaryOperations => _binaryOperations;
     public IReadOnlyDictionary<string, Func<IOperation, IOperation>> UnaryOperations => _unaryOperations;
@@ -229,6 +241,29 @@ public class FilterOptions
     public FilterOptions WithoutStringEmpty()
     {
         StringEmptyValue = null;
+        return this;
+    }
+
+    /// <summary>
+    ///     Specify the value that must be considered as a white space in the String
+    ///     <remarks>Only usable for Properties of type string</remarks>
+    /// </summary>
+    /// <returns>Current FilterOptions for chaining</returns>
+    public FilterOptions WithWhiteSpace(string stringWhiteSpace)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(stringWhiteSpace);
+
+        StringWithSpaceValue = stringWhiteSpace;
+        return this;
+    }
+
+    /// <summary>
+    ///     Remove support for Space in strings
+    /// </summary>
+    /// <returns>Current FilterOptions for chaining</returns>
+    public FilterOptions WithoutWhiteSpace()
+    {
+        StringWithSpaceValue = null;
         return this;
     }
 
