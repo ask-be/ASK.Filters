@@ -24,12 +24,16 @@ Install-Package ASK.Filters
 
 ## Usage
 
-### Query Example
+### Query Examples
 
 For a collection of resources `/books`, you can specify a filter in the URL:
 
-```
-/books?q=AND CONTAINS author John EQUAL publicationyear 1998
+```http request
+# Retrieve books with Author "John Doe" published in 1998
+/books?q=AND EQUAL author 'John Doe' EQUAL publicationyear 1998
+
+# Retrieve books with Author "John Doe" published in 1998 OR books having a publisher containing word "Page"
+/books?q=OR AND EQUAL author 'John Doe' EQUAL publicationyear 1998 CONTAINS Publisher Page
 ```
 
 This query will return books where the author's name contains "John" and the publication year is 1998.
