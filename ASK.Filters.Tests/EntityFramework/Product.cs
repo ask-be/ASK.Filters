@@ -28,8 +28,8 @@ public class Product
     public static Product[] SampleValues =
     [
         new Product(1, "Laptop Pro", 999.99m, false, new DateTime(2023, 1, 15), [
-            new Address(1, "Rue", "Line2", "Brussels", "State", "Country"),
-            new Address(2, "Rue", "Line2", "Brussels", "State", "Country"),]),
+            new Address(1, "Rue", "Line2", "Paris", "State", "France"),
+            new Address(2, "Rue", "Line2", "Brussels", "Liege", "Belgium"),]),
         new Product(2, "Smartphone X", 799.49m, true, new DateTime(2023, 2, 20), [
             new Address(3, "Rue", "Line2", "Brussels", "State", "Country")]),
         new Product(3, "Wireless Earbuds", 129.99m, false, new DateTime(2023, 3, 5), [
@@ -88,4 +88,5 @@ public class ProductDbContext(DbContextOptions<ProductDbContext> options) : DbCo
     }
 
     public DbSet<Product> Products { get; set; }
+    public DbSet<Address> Addresses { get; set; }
 }

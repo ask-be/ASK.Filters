@@ -52,17 +52,6 @@ public class FilterOptionsTests
     }
 
     [Fact]
-    public void WithStringEmpty_ShouldFail_WhenStringEmptyValueIsNull()
-    {
-        // Arrange
-        var properties = new List<FilterProperty> { new FilterProperty("Name", typeof(string)) };
-        var filterOptions = new FilterOptions(properties);
-
-        // Act & Assert
-        Assert.Throws<ArgumentNullException>(() => filterOptions.WithStringEmpty(null));
-    }
-
-    [Fact]
     public void AddConverter_ShouldFail_WhenConverterIsNull()
     {
         // Arrange
@@ -97,16 +86,5 @@ public class FilterOptionsTests
 
         // Act & Assert
         Assert.Throws<ArgumentException>(() => filterOptions.WithNullValue(string.Empty));
-    }
-
-    [Fact]
-    public void WithStringEmpty_ShouldFail_WhenStringEmptyValueIsWhitespace()
-    {
-        // Arrange
-        var properties = new List<FilterProperty> { new FilterProperty("Name", typeof(string)) };
-        var filterOptions = new FilterOptions(properties);
-
-        // Act & Assert
-        Assert.Throws<ArgumentException>(() => filterOptions.WithStringEmpty(" "));
     }
 }

@@ -49,31 +49,11 @@ public class FilterPropertyTypeTests
     [Fact]
     public void ParseEqualStringFilterWithEmpty()
     {
-        const string q = "eq name EMPTY";
+        const string q = "eq name ''";
         var filter = _parser.Parse(q);
 
         filter.Value.Should().Be(q);
         filter.Operation.Should().Be(new EqualOperation("Name",string.Empty));
-    }
-
-    [Fact]
-    public void ParseEqualStringFilterWithCustomEmptyValue()
-    {
-        const string q = "eq name STRING-EMPTY";
-        var filter = new PolishNotationFilterParser(_options.WithStringEmpty("STRING-EMPTY")).Parse(q);
-
-        filter.Value.Should().Be(q);
-        filter.Operation.Should().Be(new EqualOperation("Name",string.Empty));
-    }
-
-    [Fact]
-    public void ParseEqualStringFilterWithoutEmptyValueSupport()
-    {
-        const string q = "eq name EMPTY";
-        var filter = new PolishNotationFilterParser(_options.WithoutStringEmpty()).Parse(q);
-
-        filter.Value.Should().Be(q);
-        filter.Operation.Should().Be(new EqualOperation("Name","EMPTY"));
     }
 
     [Fact]
@@ -83,26 +63,17 @@ public class FilterPropertyTypeTests
         var filter = _parser.Parse(q);
 
         filter.Value.Should().Be(q);
-        filter.Operation.Should().Be(new EqualOperation("Name","John Doe"));
+        filter.Operation.Should().Be(new EqualOperation("Name","John_Doe"));
     }
 
     [Fact]
     public void ParseEqualStringFilterWithCustomSpacesValue()
     {
-        const string q = "eq name John|Doe";
-        var filter = new PolishNotationFilterParser(_options.WithWhiteSpace("|")).Parse(q);
+        const string q = "eq name 'John Doe'";
+        var filter = _parser.Parse(q);
 
         filter.Value.Should().Be(q);
         filter.Operation.Should().Be(new EqualOperation("Name","John Doe"));
-    }
-    [Fact]
-    public void ParseEqualStringFilterWithoutWhiteSpaceSupport()
-    {
-        const string q = "eq name John_Doe";
-        var filter = new PolishNotationFilterParser(_options.WithoutWhiteSpace()).Parse(q);
-
-        filter.Value.Should().Be(q);
-        filter.Operation.Should().Be(new EqualOperation("Name","John_Doe"));
     }
 
     [Fact]

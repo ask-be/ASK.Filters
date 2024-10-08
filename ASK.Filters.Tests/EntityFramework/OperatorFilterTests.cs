@@ -40,7 +40,6 @@ public class OperatorFilterTests(ITestOutputHelper output) : BaseEFTest(output)
     {
         var options = new FilterOptions<Product>()
                       .WithNullValue("NULL_VALUE")
-                      .WithStringEmpty("EMPTY_VALUE")
                       .AddProperty<string>("City")
                       .AddOperation("LIKE", (x,y) => new LikeOperation(x,y));
 
@@ -132,7 +131,7 @@ public class OperatorFilterTests(ITestOutputHelper output) : BaseEFTest(output)
     }
 
     [Theory]
-    [InlineData("Eq Name EMPTY_VALUE",1)]
+    [InlineData("Eq Name ''",1)]
     public void TestEmptyValueFilter(string filterString, int expectedCount)
     {
         ApplyFilterAndCheckCount(filterString, expectedCount);

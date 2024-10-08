@@ -1,3 +1,4 @@
+using System.Text;
 using ASK.Filters.Operations;
 
 namespace ASK.Filters;
@@ -71,11 +72,11 @@ public class PolishNotationFilterParser(FilterOptions filterOptions, bool revers
 
     private static Stack<string> Tokenize(string input)
     {
-        return new Stack<string>(input.Split(' ', StringSplitOptions.RemoveEmptyEntries).Reverse());
+        return new Stack<string>(Tokenizer.Tokenize(input).Reverse().ToArray());
     }
 
     private static Stack<string> TokenizeReverse(string input)
     {
-        return new Stack<string>(input.Split(' ', StringSplitOptions.RemoveEmptyEntries));
+        return new Stack<string>(Tokenizer.Tokenize(input).ToArray());
     }
 }

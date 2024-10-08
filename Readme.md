@@ -52,8 +52,7 @@ var filterOptions = new FilterOptions([
                         new FilterProperty<AuthorId>("authorId") // Property with Custom Type
                     ])
                     .AddConverter(x => new AuthorId(x)) // Custom Type Converter
-                    .WithNullValue("[NULL]")   // Property value used to replace NULL
-                    .WithStringEmpty("[EMPTY]"); // Property value used to replace an empty string
+                    .WithNullValue("[NULL]");   // Property value used to replace NULL
 
 // Once you have filter options, create a parser
 var filterParser = new PolishNotationFilterParser(filterOptions);
