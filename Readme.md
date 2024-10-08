@@ -1,5 +1,7 @@
 # ASK.Filters
 
+[![.NET](https://github.com/ask-be/ask.filters/actions/workflows/dotnet.yml/badge.svg)](https://github.com/ask-be/ask.filters/actions/workflows/dotnet.yml)
+
 **ASK.Filters** is a C# library that converts `WHERE` clauses written in Polish notation into expressions that can be
 used with EntityFramework or any IEnumerable. This library is particularly useful for REST APIs, allowing complex
 filters to be specified directly in the URL.
