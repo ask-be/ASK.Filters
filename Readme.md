@@ -163,7 +163,7 @@ public class UserFilterEvaluator : FilterEvaluator<User>
     {
         if (property.Name == "FirstName")
         {
-            return Expression.Or(
+            return Expression.OrElse(
                 property.GetExpression(
                     Expression.Property(parameter, "Firstname"),
                     Expression.Constant(property.Value)
