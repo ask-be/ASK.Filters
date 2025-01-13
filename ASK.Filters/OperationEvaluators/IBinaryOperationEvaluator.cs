@@ -13,5 +13,5 @@ public class AndOperationEvaluator : IBinaryOperationEvaluator
 }
 public class OrOperationEvaluator : IBinaryOperationEvaluator
 {
-    public Expression Evaluate(Expression left, Expression right) => Expression.Or(left, right);
+    public Expression Evaluate(Expression left, Expression right) => Expression.OrElse(left, right);
 }
